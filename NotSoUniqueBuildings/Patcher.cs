@@ -1,51 +1,58 @@
-using CitiesHarmony.API;
+using System.Reflection;
 using HarmonyLib;
 
 namespace NotSoUniqueBuildings
 {
-    /// <summary>
-    /// Class to manage the mod's Harmony patches.
-    /// </summary>
-    internal static class Patcher
+    public static class Patcher
     {
-        // Unique harmony identifier.
-        private const string HarmonyId = "github.com/bloodypenguin/Skylines-NotSoUniqueBuildings";
+        private const string HarmonyId = "t1a2l.NotSoUniqueBuildings";
 
-        // Flag.
-        internal static bool Patched => _patched;
-        private static bool _patched = false;
+        private static bool patched = false;
 
-
-        /// <summary>
-        /// Apply all Harmony patches.
-        /// </summary>
         public static void PatchAll()
         {
-            // Don't do anything if already patched.
-            if (!_patched)
-            {
-                // Ensure Harmony is ready before patching.
-                if (HarmonyHelper.IsHarmonyInstalled)
-                {
-                    // Apply all annotated patches and update flag.
-                    Harmony harmonyInstance = new Harmony(HarmonyId);
-                    harmonyInstance.PatchAll();
-                    _patched = true;
-                }
-            }
-        }
+            if (patched) return;
 
+            UnityEngine.Debug.Log("Not So Unique Buildings: Patching...");
+
+            patched = true;
+
+            // Apply your patches here!
+            // Harmony.DEBUG = true;
+            var harmony = new Harmony("t1a2l.NotSoUniqueBuildings");
+            harmony.PatchAll(Assembly.GetExecutingAssembly());
+        }
 
         public static void UnpatchAll()
         {
-            // Only unapply if patches appplied.
-            if (_patched)
-            {
-                // Unapply patches, but only with our HarmonyID.
-                Harmony harmonyInstance = new Harmony(HarmonyId);
-                harmonyInstance.UnpatchAll(HarmonyId);
-                _patched = false;
-            }
+            if (!patched) return;
+
+            var harmony = new Harmony(HarmonyId);
+            harmony.UnpatchAll(HarmonyId);
+
+            patched = false;
+
+            UnityEngine.Debug.Log("Not So Unique Buildings: Reverted...");
+        }
+    }
+
+    // Random example patch
+    [HarmonyPatch(typeof(SimulationManager), "CreateRelay")]
+    public static class SimulationManagerCreateRelayPatch
+    {
+        public static void Prefix()
+        {
+            UnityEngine.Debug.Log("CreateRelay Prefix");
+        }
+    }
+
+    // Random example patch
+    [HarmonyPatch(typeof(LoadingManager), "MetaDataLoaded")]
+    public static class LoadingManagerMetaDataLoadedPatch
+    {
+        public static void Prefix()
+        {
+            UnityEngine.Debug.Log("MetaDataLoaded Prefix");
         }
     }
 }

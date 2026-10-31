@@ -1,13 +1,12 @@
-using System.Runtime.CompilerServices;
 using HarmonyLib;
 
 namespace NotSoUniqueBuildings.HarmonyPatches
 {
     [HarmonyPatch(typeof(MonumentAI))]
-    [HarmonyPatch(nameof(MonumentAI.CanBeBuiltOnlyOnce))]
-    internal class MonumentAIPatch
+    public static class MonumentAIPatch
     {
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        [HarmonyPatch(typeof(MonumentAI), "CanBeBuiltOnlyOnce")]
+        [HarmonyPrefix]
         public static bool Prefix(ref bool __result)
         {
             __result = false;

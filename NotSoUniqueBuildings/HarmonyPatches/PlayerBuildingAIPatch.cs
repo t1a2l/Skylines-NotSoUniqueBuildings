@@ -1,13 +1,12 @@
-using System.Runtime.CompilerServices;
 using HarmonyLib;
 
 namespace NotSoUniqueBuildings.HarmonyPatches
 {
     [HarmonyPatch(typeof(PlayerBuildingAI))]
-    [HarmonyPatch(nameof(PlayerBuildingAI.CanBeBuiltOnlyOnce))]
-    internal class PlayerBuildingAIPatch
+    public static class PlayerBuildingAIPatch
     {
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        [HarmonyPatch(typeof(PlayerBuildingAI), "CanBeBuiltOnlyOnce")]
+        [HarmonyPrefix]
         public static bool Prefix(ref bool __result)
         {
             __result = false;
